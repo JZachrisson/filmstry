@@ -90,7 +90,7 @@ jobs:
             if [ "${CURRENT_BRANCH}" == "master" ]
             then
               aws cloudfront create-invalidation --distrubtion-id ${DEV_PRODUCTION_ID} --paths /\*
-            elif [ ${CURRENT_BRANCH}" == "staging" ]
+            elif [ "${CURRENT_BRANCH}" == "staging" ]
             then
               aws cloudfront create-invalidation --distrubtion-id ${DEV_STAGING_ID} --paths /\*         
             else

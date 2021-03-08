@@ -30,7 +30,7 @@ jobs:
       - checkout
       - run:
           name: Show current branch
-          command: echo ${CURRENT_BRANCH}
+          command: echo ${CIRCLE_BRANCH}
       - run:
           name: Installing AWS CLI
           working_directory: /
@@ -52,7 +52,7 @@ jobs:
             if [ "${CURRENT_BRANCH}" == "master" ]
             then
               aws --region ${AWS_REGION} s3 sync ~/repo/build s3://${AWS_BUCKET_PRODUCTION} --delete
-            elif [ ${CURRENT_BRANCH}" == "staging" ]
+            elif [ "${CURRENT_BRANCH}" == "staging" ]
             then
               aws --region ${AWS_REGION} s3 sync ~/repo/build s3://${AWS_BUCKET_STAGING} --delete          
             else
@@ -67,7 +67,7 @@ jobs:
       - checkout
       - run:
           name: Show current branch
-          command: echo ${CURRENT_BRANCH}
+          command: echo ${CIRCLE_BRANCH}
       - run:
           name: Installing AWS CLI
           working_directory: /

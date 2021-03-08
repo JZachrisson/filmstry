@@ -39,13 +39,13 @@ jobs:
             sudo apt-get install -y awscli
             sudo apt-get install -y python-pip python-dev build-essential
       - run:
-        name: Build project
-        command: |
-          npm install
-          npm run build
-          cd build
-          zip ../build.zip -r *.[^.]*
-          echo "Build successful"
+          name: Build project
+          command: |
+            npm install
+            npm run build
+            cd build
+            zip ../build.zip -r *.[^.]*
+            echo "Build successful"
       - run:
           name: Deploy to AWS S3
           command: |
@@ -76,13 +76,13 @@ jobs:
             sudo apt-get install -y awscli
             sudo apt-get install -y python-pip python-dev build-essential
       - run:
-        name: Build project
-        command: |
-          npm install
-          npm run build
-          cd build
-          zip ../build.zip -r *.[^.]*
-          echo "Build successful"
+          name: Build project
+          command: |
+            npm install
+            npm run build
+            cd build
+            zip ../build.zip -r *.[^.]*
+            echo "Build successful"
       - run:
           name: Deploy to AWS S3
           command: |

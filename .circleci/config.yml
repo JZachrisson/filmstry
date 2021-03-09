@@ -1,5 +1,4 @@
 version: 2.1
-root: true
 executors:
   app-executor:
     docker:

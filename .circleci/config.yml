@@ -51,6 +51,7 @@ jobs:
       - *restore-cache
       - *install-dependencies
       - *save-cache
+
   linting:
     executor: app-executor
     steps:
@@ -60,6 +61,7 @@ jobs:
       - run:
           name: Run linting
           command: npm run lint
+
   prettier:
     executor: app-executor
     steps:

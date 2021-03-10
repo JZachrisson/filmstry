@@ -11,7 +11,7 @@ executors:
             - image: 'cibuilds/base:latest'
         resource_class: small
 
-aliases:xoxb-1823771914007-1826878831191-SBP2RGKeJDJoQWdg40D516HM
+# aliases:xoxb-1823771914007-1826878831191-SBP2RGKeJDJoQWdg40D516HM
     - &show-current-branch-name
       run:
           name: Show current branch
@@ -187,7 +187,7 @@ workflows:
             - test
             - notify-via-slack:
                   requires:
-                      - build
+                      - test
                   filters:
                       branches:
                           only:

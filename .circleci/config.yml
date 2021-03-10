@@ -11,7 +11,6 @@ executors:
             - image: 'cibuilds/base:latest'
         resource_class: small
 
-# aliases:xoxb-1823771914007-1826878831191-SBP2RGKeJDJoQWdg40D516HM
 aliases:
     - &show-current-branch-name
       run:

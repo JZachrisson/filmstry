@@ -1,11 +1,17 @@
 version: 2.1
+orbs:
+    slack: circleci/slack@4.3.0
 executors:
     app-executor:
         docker:
-            - image: circleci/node:15.5.0
+            - image: circleci/node:13.12.0
         working_directory: ~/repo
+    slack-executor:
+        docker:
+            - image: 'cibuilds/base:latest'
+        resource_class: small
 
-aliases:
+aliases:xoxb-1823771914007-1826878831191-SBP2RGKeJDJoQWdg40D516HM
     - &show-current-branch-name
       run:
           name: Show current branch
@@ -34,14 +40,13 @@ aliases:
               sudo apt-get install -y python-pip python-dev build-essential
     - &build-project
       run:
-          name: Build project
+          name: Build Project
           command: |
               npm install
               npm run build
               cd build
-              zip ../build.zip -r *.[^.]*
+              zip ../build.zip -r * .[^.]*
               echo "Build successful"
-
 jobs:
     build:
         executor: app-executor
@@ -62,15 +67,15 @@ jobs:
                   name: Run linting
                   command: npm run lint
 
-    # prettier:
-    #   executor: app-executor
-    #   steps:
-    #     - checkout
-    #     - *show-current-branch-name
-    #     - *restore-cache
-    #     - run:
-    #         name: Run prettier check
-    #         command: npm run prettier:check
+    prettier:
+        executor: app-executor
+        steps:
+            - checkout
+            - *show-current-branch-name
+            - *restore-cache
+            - run:
+                  name: Run prettier check
+                  command: npm run prettier:check
 
     deploy-to-aws-s3:
         executor: app-executor
@@ -87,11 +92,10 @@ jobs:
                         aws --region ${AWS_REGION} s3 sync ~/repo/build s3://${AWS_BUCKET_PRODUCTION} --delete
                       elif [ "${CIRCLE_BRANCH}" == "staging" ]
                       then
-                        aws --region ${AWS_REGION} s3 sync ~/repo/build s3://${AWS_BUCKET_STAGING} --delete          
+                        aws --region ${AWS_REGION} s3 sync ~/repo/build s3://${AWS_BUCKET_STAGING} --delete
                       else
                         aws --region ${AWS_REGION} s3 sync ~/repo/build s3://${AWS_DEV_BUCKET} --delete
                       fi
-
     deploy-to-aws-cloudfront:
         executor: app-executor
         steps:
@@ -108,16 +112,80 @@ jobs:
                         aws cloudfront create-invalidation --distribution-id ${DEV_PRODUCTION_ID} --paths /\*
                       elif [ "${CIRCLE_BRANCH}" == "staging" ]
                       then
-                        aws cloudfront create-invalidation --distribution-id ${DEV_STAGING_ID} --paths /\*         
+                        aws cloudfront create-invalidation --distribution-id ${DEV_STAGING_ID} --paths /\*
                       else
                         aws cloudfront create-invalidation --distribution-id ${DEV_DISTRIBUTION_ID} --paths /\*
                       fi
+    test:
+      executor: app-executor
+      steps:
+        - run: echo "test my app"
+
+    notify-via-slack:
+        executor: slack-executor
+        steps:
+            - run: echo "Slack notification"
+            - slack/notify:
+                  event: 'always'
+                  channel: 'movies-circleci'
+                  template: ''
+                  custom: |
+                      {
+                        "blocks": [
+                          {
+                            "type": "header",
+                            "text": {
+                              "type": "plain_text",
+                              "text": "${CIRCLE_BRANCH} branch deployment to aws s3 and cloudfront is complete. 👍",
+                              "emoji": true
+                            }
+                          },
+                          {
+                            "type": "section",
+                            "fields": [
+                              {
+                                "type": "mrkdwn",
+                                "text": "*Project*:\n$CIRCLE_PROJECT_REPONAME"
+                              },
+                              {
+                                "type": "mrkdwn",
+                                "text": "*Branch*:\n$CIRCLE_BRANCH"
+                              },
+                              {
+                                "type": "mrkdwn",
+                                "text": "*When*:\n$(date +'%m/%d/%Y %T')"
+                              },
+                              {
+                                "type": "mrkdwn",
+                                "text": "*Build*:\n$CIRCLE_BUILD_NUM"
+                              },
+                              {
+                                "type": "mrkdwn",
+                                "text": "*Author*:\n$CIRCLE_PROJECT_USERNAME"
+                              }
+                            ]
+                          },
+                          {
+                            "type": "actions",
+                            "elements": [
+                              {
+                                "type": "button",
+                                "text": {
+                                  "type": "plain_text",
+                                  "text": "View Job"
+                                },
+                                "url": "${CIRCLE_BUILD_URL}"
+                              }
+                            ]
+                          }
+                        ]
+                      }
 
 workflows:
     build_and_deploy:
         jobs:
-            - build
-            - linting:
+            - test
+            - notify-via-slack:
                   requires:
                       - build
                   filters:
@@ -135,21 +203,30 @@ workflows:
             #                   - develop
             #                   - staging
             #                   - master
-            - deploy-to-aws-s3:
-                  requires:
-                      - linting
-                  filters:
-                      branches:
-                          only:
-                              - develop
-                              - staging
-                              - master
-            - deploy-to-aws-cloudfront:
-                  requires:
-                      - deploy-to-aws-s3
-                  filters:
-                      branches:
-                          only:
-                              - develop
-                              - staging
-                              - master
+            # - deploy-to-aws-s3:
+            #       requires:
+            #           - prettier
+            #       filters:
+            #           branches:
+            #               only:
+            #                   - develop
+            #                   - staging
+            #                   - master
+            # - deploy-to-aws-cloudfront:
+            #       requires:
+            #           - deploy-to-aws-s3
+            #       filters:
+            #           branches:
+            #               only:
+            #                   - develop
+            #                   - staging
+            #                   - master
+            # - notify-via-slack:
+            #       requires:
+            #           - deploy-to-aws-cloudfront
+            #       filters:
+            #           branches:
+            #               only:
+            #                   - develop
+            #                   - staging
+            #                   - master

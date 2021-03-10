@@ -12,6 +12,7 @@ executors:
         resource_class: small
 
 # aliases:xoxb-1823771914007-1826878831191-SBP2RGKeJDJoQWdg40D516HM
+aliases:
     - &show-current-branch-name
       run:
           name: Show current branch
@@ -117,9 +118,9 @@ jobs:
                         aws cloudfront create-invalidation --distribution-id ${DEV_DISTRIBUTION_ID} --paths /\*
                       fi
     test:
-      executor: app-executor
-      steps:
-        - run: echo "test my app"
+        executor: app-executor
+        steps:
+            - run: echo "test my app"
 
     notify-via-slack:
         executor: slack-executor

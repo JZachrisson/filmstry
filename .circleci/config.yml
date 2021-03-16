@@ -1,6 +1,6 @@
-version: 2.1
 orbs:
     slack: circleci/slack@4.2.0
+version: 2.1
 executors:
     app-executor:
         docker:
@@ -12,7 +12,7 @@ executors:
         resource_class: small
     terraform-executor:
         docker:
-            - image: hashicorp/terraform:latest
+            - image: hashicorp/terraform:0.14.3
 
 aliases:
     - &show-current-branch-name
@@ -22,7 +22,7 @@ aliases:
     - &restore-cache
       restore_cache:
           keys:
-              - app-{‌{ checksum "package.json" }}
+              - app-{{ checksum "package.json" }}
               - app-
     - &install-dependencies
       run:
@@ -34,7 +34,7 @@ aliases:
       save_cache:
           paths:
               - node_modules
-          key: app-{‌{ checksum "package.json" }}
+          key: app-{{ checksum "package.json" }}
     - &install-aws-cli
       run:
           name: Installing AWS CLI
@@ -123,7 +123,7 @@ jobs:
                       cd artifacts/infrastructure/
                       terraform workspace select ${CIRCLE_BRANCH}
                       terraform apply --auto-approve
-                      terraform output filmstry_app_bucket_name > ../filmstry_bucket_name.txt
+                      terraform output cinema_app_bucket_name > ../cinema_bucket_name.txt
                       terraform output cloudfront_distribution_id > ../cloudfront_distribution_id.txt
             - persist_to_workspace:
                   root: ./
@@ -142,7 +142,7 @@ jobs:
             - run:
                   name: Deploy to AWS S3
                   command: |
-                      AWS_BUCKET_NAME=$(cat artifacts/filmstry_bucket_name.txt | sed 's/\"//g')
+                      AWS_BUCKET_NAME=$(cat artifacts/cinema_bucket_name.txt | sed 's/\"//g')
                       echo $AWS_BUCKET_NAME
                       if [ "${CIRCLE_BRANCH}" == "master" ]
                       then
@@ -185,7 +185,7 @@ jobs:
             - run: echo "Slack notification"
             - slack/notify:
                   event: 'always'
-                  channel: 'movies-circleci'
+                  channel: 'cinema-app-circleci'
                   template: ''
                   custom: |
                       {
@@ -249,7 +249,7 @@ jobs:
                   command: |
                       cd infrastructure/
                       terraform init
-                      terraform workspace select "${CIRCLE_BRANCH} || terraform workspace new ${CIRCLE_BRANCH}
+                      terraform workspace select ${CIRCLE_BRANCH} || terraform workspace new ${CIRCLE_BRANCH}
                       terraform destroy --auto-approve
 
 workflows:
@@ -277,6 +277,7 @@ workflows:
             - terraform-validate:
                   requires:
                       - linting
+                      # - prettier
                   filters:
                       branches:
                           only:

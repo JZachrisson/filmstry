@@ -284,7 +284,7 @@ workflows:
                               - master
             - deploy-to-aws-s3:
                   requires:
-                      - linting
+                      - terraform-plan-and-apply
                   filters:
                       branches:
                           only:

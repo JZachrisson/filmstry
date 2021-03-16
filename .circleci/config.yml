@@ -310,15 +310,15 @@ workflows:
                               - staging
                               - master
             - hold: 
-                type: approval
-                requires:
-                  - deploy-to-aws-cloudfront
+                  type: approval
+                  requires:
+                    - deploy-to-aws-cloudfront
             - terraform-destroy:
-                requires:
-                      - hold
-                  filters:
-                      branches:
-                          only:
-                              - develop
-                              - staging
-                              - master
+                  requires:
+                        - hold
+                    filters:
+                        branches:
+                            only:
+                                - develop
+                                - staging
+                                - master

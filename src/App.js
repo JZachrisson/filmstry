@@ -1,7 +1,17 @@
 import React from 'react';
+import { Provider } from 'react-redux';
+
 import './App.css';
+import store from './redux/store';
+
 const App = () => {
-    return <div className="App">Hej!!</div>;
+    return (
+        <Provider store={store}>
+            <div className="app">
+                <h1>Hej!!</h1>
+            </div>
+        </Provider>
+    );
 };
 
 export default App;

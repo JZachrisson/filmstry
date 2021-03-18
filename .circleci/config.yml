@@ -322,4 +322,3 @@ workflows:
                           only:
                               - develop
                               - staging
-                              - master

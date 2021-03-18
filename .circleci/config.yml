@@ -14,7 +14,6 @@ executors:
         docker:
             - image: hashicorp/terraform:0.14.3
 
-<<<<<<< HEAD
 jobs:
   build:
     docker:
@@ -134,7 +133,7 @@ workflows:
                 - develop
                 - staging
                 - master
-=======
+
 aliases:
     - &show-current-branch-name
       run:
@@ -444,4 +443,3 @@ workflows:
                               - develop
                               - staging
                               - master
->>>>>>> 2f129e448d3f70d405fcf1e1626de253669c1454

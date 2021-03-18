@@ -2,6 +2,7 @@ import React from 'react';
 import './MainContent.scss';
 
 import Slideshow from '../slideshow/Slideshow';
+import Paginate from '../paginate/Paginate';
 
 const MainContent = () => {
     const images = [
@@ -15,12 +16,25 @@ const MainContent = () => {
             url: 'https://cdn.pixabay.com/photo/2015/12/09/17/12/popcorn-1085072__480.jpg'
         }
     ];
+
+    const [currentPage, setCurrentPage] = React.useState(1);
+
+    const paginate = (type) => {
+        if (type === 'prev' && currentPage >= 1) {
+            setCurrentPage((prev) => prev - 1);
+        } else {
+            setCurrentPage((prev) => prev + 1);
+        }
+    };
+
     return (
         <div className="main-content">
             <Slideshow images={images} auto={true} showArrows={false} />
             <div className="movie-grid-container">
                 <div className="movie-type">Now Playing</div>
-                <div className="paginate">Paginate</div>
+                <div className="paginate">
+                    <Paginate currentPage={currentPage} totalPages={10} paginate={paginate} />
+                </div>
             </div>
         </div>
     );

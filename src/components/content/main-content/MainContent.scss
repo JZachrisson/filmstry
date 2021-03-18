@@ -1,0 +1,27 @@
+.main-content {
+    margin-bottom: 50px;
+}
+
+.movie-grid-container {
+    display: grid;
+    grid-template-areas: "movieType . paginate";
+    grid-template-columns: max-content 1fr max-content;
+    grid-template-rows: 1fr;
+    margin-bottom: 30px;
+    font-size: 18px;
+    color: white;
+    width: inherit;
+
+    .movie-type {
+        grid-area: movieType;
+        text-align: left;
+        padding: 8px 25px;
+    }
+
+
+    .paginate {
+        grid-area: paginate;
+        text-align: right;
+        padding: 8px 25px;
+    }
+}

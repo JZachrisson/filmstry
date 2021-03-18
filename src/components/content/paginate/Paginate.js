@@ -22,7 +22,7 @@ const Paginate = ({ currentPage, totalPages, paginate }) => {
             </button>
             <button className={page === totalPages ? 'paginate-btn disable' : 'paginate-btn'} onClick={() => paginate('next')}>
                 Next
-            </button>
+            </button> 
         </>
     );
 };
@@ -30,7 +30,8 @@ const Paginate = ({ currentPage, totalPages, paginate }) => {
 Paginate.propTypes = {
     currentPage: PropTypes.number.isRequired,
     totalPages: PropTypes.number.isRequired,
-    paginate: PropTypes.function.isRequired
+    paginate: PropTypes.func.isRequired
 };
+
 
 export default Paginate;

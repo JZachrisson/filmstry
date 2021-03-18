@@ -3,6 +3,7 @@ import './MainContent.scss';
 
 import Slideshow from '../slideshow/Slideshow';
 import Paginate from '../paginate/Paginate';
+import Grid from '../grid/Grid'
 
 const MainContent = () => {
     const images = [
@@ -36,6 +37,7 @@ const MainContent = () => {
                     <Paginate currentPage={currentPage} totalPages={10} paginate={paginate} />
                 </div>
             </div>
+            <Grid/>
         </div>
     );
 };

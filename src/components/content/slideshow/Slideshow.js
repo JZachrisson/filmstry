@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import './Slideshow.scss';
 
 const Slideshow = ({ images, auto, showArrows }) => {
+
     const [state, setState] = React.useState({
         slideshow: images[0],
         slideIndex: 0
@@ -14,6 +15,11 @@ const Slideshow = ({ images, auto, showArrows }) => {
     let currentSlideIndex = 0;
 
     React.useEffect(() => {
+        setState({
+            ...state,
+            slideIndex: 0,
+            slideshow: images[0]
+        })
         if (auto) {
             const timeInterval = setInterval(() => {
                 autoMoveSlide();
@@ -23,7 +29,7 @@ const Slideshow = ({ images, auto, showArrows }) => {
                 clearInterval(timeInterval);
             };
         }
-    }, []);
+    }, [images]);
 
     const autoMoveSlide = () => {
         let lastIndex = 0;

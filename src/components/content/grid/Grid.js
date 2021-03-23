@@ -1,27 +1,51 @@
 import React from 'react';
+import {connect} from 'react-redux'
 import PropTypes from 'prop-types';
+import {IMAGE_URL} from '../../../services/movies.service'
+import {v4 as uuidv4} from 'uuid'
+
 
 import Rating from '../rating/Rating';
 
 import './Grid.scss';
 
-const Grid = ({ images }) => {
+const Grid = ({ list }) => {
+
+const [movieData, setMovieData] = React.useState([])
+
+React.useEffect(() => {
+    // console.log('LIST IN GRID', list)
+    // const filteredList = list.filer((item) => )
+    const filteredList = [...list.reduce((map, obj) => map.set(obj.id, obj), new Map()).values()];
+
+    setMovieData(filteredList)
+}, [list])
+
+  function truncate(str, n) {
+    return str?.length > n ? str.substr(0, n - 1) + '...' : str;
+  }
+
     return (
         <>
             <div className="grid">
-                {images.map((image, idx) => {
+                {movieData.map((movie) => {
                     return (
-                        <div key={idx}>
-                            <div className="grid-cell" style={{ backgroundImage: `url(${image.url})` }}>
+                        <div key={uuidv4()}>
+                            <div className="grid-cell" style={{ backgroundImage: `url(${IMAGE_URL}/${movie.backdrop_path})` }}>
                                 <div className="grid-read-more">
-                                    <button className="grid-cell-btn btn btn-danger">Read More</button>
-                                </div>
+                                        <div className="grid-overview-wrapper">
+                                            <div>     
+                                                <p className="grid-overview">{truncate(movie?.overview, 150)}</p>
+                                            </div>
+                                            <button className="grid-cell-btn btn btn-danger">Read More</button>
+                                        </div>
+                                    </div>
                                 <div className="grid-detail">
-                                    <span className="grid-detail-title">Mission Impossible</span>
+                                    <span className="grid-detail-title">{movie.title}</span>
                                     <div className="grid-detail-rating">
-                                        <Rating rating={image.rating} totalStars={10} />
+                                        <Rating rating={movie.vote_average} totalStars={10} />
                                         &nbsp;&nbsp;
-                                        <div className="grid-vote-average">{image.rating}</div>
+                                        <div className="grid-vote-average">{movie.vote_average}</div>
                                     </div>
                                 </div>
                             </div>
@@ -34,7 +58,16 @@ const Grid = ({ images }) => {
 };
 
 Grid.propTypes = {
-    images: PropTypes.array.isRequired
+    list: PropTypes.array.isRequired
 };
 
-export default Grid;
+const mapStateToProps = (state) => ({
+    list: state.movies.list
+})
+
+export default connect(
+    mapStateToProps,
+    {}
+)(Grid);
+
+

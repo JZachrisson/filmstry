@@ -1,12 +1,15 @@
 import React from 'react';
+import {connect} from 'react-redux'
+import PropTypes from 'prop-types'
 import './MainContent.scss';
 
 import Slideshow from '../slideshow/Slideshow';
 import Paginate from '../paginate/Paginate';
 import Grid from '../grid/Grid';
+import {IMAGE_URL} from '../../../services/movies.service'
 
-const MainContent = () => {
-    const images = [
+const MainContent = ({list}) => {
+    const imagesArray = [
         {
             url: 'https://cdn.pixabay.com/photo/2015/09/02/12/45/movie-918655__480.jpg',
             rating: 7.5
@@ -34,6 +37,33 @@ const MainContent = () => {
     ];
 
     const [currentPage, setCurrentPage] = React.useState(1);
+    const [images, setImages] = React.useState([])
+
+    const randomMovies = list.sort(() => Math.random() - Math.random()).slice(0, 4)
+    
+    React.useEffect(() => {
+        if(randomMovies.length) {
+            const IMAGES = [
+                {
+                    id: 1,
+                    url: `${IMAGE_URL}/${randomMovies[0].backdrop_path}`
+                },
+                 {
+                    id: 2,
+                    url: `${IMAGE_URL}/${randomMovies[1].backdrop_path}`
+                },
+                 {
+                    id: 3,
+                    url: `${IMAGE_URL}/${randomMovies[2].backdrop_path}`
+                },
+                 {
+                    id: 4,
+                    url: `${IMAGE_URL}/${randomMovies[3].backdrop_path}`
+                }
+            ]
+            setImages(IMAGES)
+        }
+    }, [])
 
     const paginate = (type) => {
         if (type === 'prev' && currentPage >= 1) {
@@ -52,9 +82,20 @@ const MainContent = () => {
                     <Paginate currentPage={currentPage} totalPages={10} paginate={paginate} />
                 </div>
             </div>
-            <Grid images={images} />
+            <Grid/>
         </div>
     );
 };
 
-export default MainContent;
+MainContent.propTypes = {
+    list: PropTypes.array.isRequired
+}
+
+const mapStateToProps = (state) => ({
+    list: state.movies.list
+})
+
+export default connect(
+    mapStateToProps,
+    {}
+)(MainContent);

@@ -1,4 +1,9 @@
 import React from 'react';
+import {connect} from 'react-redux'
+import {getMovies} from '../../redux/actions/movies'
+import PropTypes from 'prop-types'
+
+import { API_URL } from '../../services/movies.service';
 
 import './Header.scss';
 import logo from '../../logo.svg';
@@ -30,7 +35,8 @@ const HEADER_LIST = [
     }
 ];
 
-const Header = () => {
+const Header = ({getMovies}) => {
+   
     const [navClass, setNavClass] = React.useState(false);
     const [menuClass, setMenuClass] = React.useState(false);
 
@@ -38,6 +44,12 @@ const Header = () => {
         setMenuClass((prevMenu) => !prevMenu);
         setNavClass((prevClass) => !prevClass);
     };
+
+    React.useEffect(() => {
+        getMovies('now_playing', 1)
+
+        // es-linst-disable-next-line
+    }, []);
 
     React.useEffect(() => {
         if (navClass) {
@@ -82,4 +94,15 @@ const Header = () => {
     );
 };
 
-export default Header;
+Header.propTypes = {
+    getMovies: PropTypes.func
+}
+
+const mapStateToProps = (state) => ({
+    list: state.movies.list
+})
+
+export default connect(
+    mapStateToProps,
+    {getMovies}
+)(Header);

@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import {IMAGE_URL} from '../../../services/movies.service'
 import {v4 as uuidv4} from 'uuid'
 
-
+import LazyImage from '../../lazy-image/LazyImage'
 import Rating from '../rating/Rating';
 
 import './Grid.scss';
@@ -31,7 +31,7 @@ React.useEffect(() => {
                 {movieData.map((movie) => {
                     return (
                         <div key={uuidv4()}>
-                            <div className="grid-cell" style={{ backgroundImage: `url(${IMAGE_URL}/${movie.backdrop_path})` }}>
+                            <LazyImage className="grid-cell" src={`${IMAGE_URL}/${movie.backdrop_path}`} alt="placeholder">
                                 <div className="grid-read-more">
                                         <div className="grid-overview-wrapper">
                                             <div>     
@@ -48,7 +48,7 @@ React.useEffect(() => {
                                         <div className="grid-vote-average">{movie.vote_average}</div>
                                     </div>
                                 </div>
-                            </div>
+                            </LazyImage>
                         </div>
                     );
                 })}

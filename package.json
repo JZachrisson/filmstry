@@ -6,6 +6,7 @@
         "@testing-library/jest-dom": "^5.11.9",
         "@testing-library/react": "^11.2.5",
         "@testing-library/user-event": "^12.8.1",
+        "axios": "^0.21.1",
         "node-sass": "^5.0.0",
         "prop-types": "^15.7.2",
         "react": "^17.0.1",
@@ -15,6 +16,7 @@
         "redux": "^4.0.5",
         "redux-devtools-extension": "^2.13.9",
         "redux-thunk": "^2.3.0",
+        "uuid": "^8.3.2",
         "web-vitals": "^1.1.0"
     },
     "scripts": {
@@ -51,7 +53,6 @@
         "eslint-plugin-import": "^2.22.1",
         "eslint-plugin-node": "^11.1.0",
         "eslint-plugin-promise": "^4.3.1",
-        "eslint-plugin-react": "^7.22.0",
         "eslint-plugin-standard": "^5.0.0",
         "prettier": "2.2.1"
     }

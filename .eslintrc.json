@@ -29,5 +29,6 @@
     ],
     "camelcase": 0,
     "no-return-assign": 0
-  }
+  },
+  "parser": "babel-eslint"
 }

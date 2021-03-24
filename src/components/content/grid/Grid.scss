@@ -30,12 +30,16 @@
 }
 
 .grid-read-more {
-     height: 100%;
-     display: grid;
+    display: flex;
+    align-items: center;
+    justify-content: center;
      display: none;
 
+    .grid-overview {
+      color: #c8d6e5
+    }
+
      .grid-cell-btn {
-        margin: auto;
         text-transform: uppercase;
         font-weight: bold;
     }
@@ -47,8 +51,8 @@
 
 
 .grid-cell:hover .grid-read-more {
-   display: grid;
-   background: rgba(49, 56, 64, 0.1);
+   display: flex;
+   background: rgba(49, 56, 64, 0.5);
    transition: all 1s ease-out;
 }
 

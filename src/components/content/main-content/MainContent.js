@@ -1,43 +1,96 @@
 import React from 'react';
+import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
 import './MainContent.scss';
 
 import Slideshow from '../slideshow/Slideshow';
 import Paginate from '../paginate/Paginate';
+import Grid from '../grid/Grid';
+import { IMAGE_URL } from '../../../services/movies.service';
+import { setResponsePageNumber, getMovies } from '../../../redux/actions/movies';
 
-const MainContent = () => {
-    const images = [
-        {
-            url: 'https://cdn.pixabay.com/photo/2015/09/02/12/45/movie-918655__480.jpg'
-        },
-        {
-            url: 'https://media.istockphoto.com/photos/drive-in-movie-picture-id1252963897?b=1&k=6&m=1252963897&s=170667a&w=0&h=v1Marzud9z8zsvxOxR0wTT_KhB1EHI4vn_KSplq1SKo='
-        },
-        {
-            url: 'https://cdn.pixabay.com/photo/2015/12/09/17/12/popcorn-1085072__480.jpg'
+const MainContent = ({ list, movieType, totalPages, page, setResponsePageNumber, getMovies }) => {
+
+    const [currentPage, setCurrentPage] = React.useState(page);
+    const [images, setImages] = React.useState([]);
+
+    const HEADER_TYPE = {
+        now_playing: 'Now Playing',
+        popular: 'Popular',
+        top_rated: 'Top Rated',
+        upcoming: 'Upcoming'
+    };
+
+    const randomMovies = list.sort(() => Math.random() - Math.random()).slice(0, 4);
+
+    React.useEffect(() => {
+        if (randomMovies.length) {
+            const IMAGES = [
+                {
+                    id: 1,
+                    url: `${IMAGE_URL}/${randomMovies[0].backdrop_path}`
+                },
+                {
+                    id: 2,
+                    url: `${IMAGE_URL}/${randomMovies[1].backdrop_path}`
+                },
+                {
+                    id: 3,
+                    url: `${IMAGE_URL}/${randomMovies[2].backdrop_path}`
+                },
+                {
+                    id: 4,
+                    url: `${IMAGE_URL}/${randomMovies[3].backdrop_path}`
+                }
+            ];
+            setImages(IMAGES);
         }
-    ];
+    }, []);
 
-    const [currentPage, setCurrentPage] = React.useState(1);
+    React.useEffect(() => {
+        setCurrentPage(page);
+    }, [page, totalPages]);
 
     const paginate = (type) => {
+        let pageNumber = currentPage;
         if (type === 'prev' && currentPage >= 1) {
-            setCurrentPage((prev) => prev - 1);
+            pageNumber -= 1;
         } else {
-            setCurrentPage((prev) => prev + 1);
+            pageNumber += 1;
         }
+        setCurrentPage(pageNumber);
+        setResponsePageNumber(pageNumber, totalPages);
+        getMovies(movieType, pageNumber);
     };
 
     return (
         <div className="main-content">
             <Slideshow images={images} auto={true} showArrows={false} />
             <div className="movie-grid-container">
-                <div className="movie-type">Now Playing</div>
+                <div className="movie-type">{HEADER_TYPE[movieType]}</div>
                 <div className="paginate">
-                    <Paginate currentPage={currentPage} totalPages={10} paginate={paginate} />
+                    <Paginate currentPage={currentPage} totalPages={totalPages} paginate={paginate} />
                 </div>
             </div>
+            <Grid />
         </div>
     );
 };
 
-export default MainContent;
+MainContent.propTypes = {
+    list: PropTypes.array.isRequired,
+    movieType: PropTypes.string.isRequired,
+    totalPages: PropTypes.number.isRequired,
+    page: PropTypes.number.isRequired,
+    setResponsePageNumber: PropTypes.func,
+    getMovies: PropTypes.func
+};
+
+const mapStateToProps = (state) => ({
+    list: state.movies.list,
+    movieType: state.movies.movieType,
+    totalPages: state.movies.totalPages,
+    page: state.movies.page
+});
+
+export default connect(mapStateToProps, { setResponsePageNumber, getMovies })(MainContent);

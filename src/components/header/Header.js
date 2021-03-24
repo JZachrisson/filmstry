@@ -1,9 +1,7 @@
 import React from 'react';
-import {connect} from 'react-redux'
-import {getMovies} from '../../redux/actions/movies'
-import PropTypes from 'prop-types'
-
-import { API_URL } from '../../services/movies.service';
+import { connect } from 'react-redux';
+import { getMovies, setMovieType, setResponsePageNumber } from '../../redux/actions/movies';
+import PropTypes from 'prop-types';
 
 import './Header.scss';
 import logo from '../../logo.svg';
@@ -35,21 +33,26 @@ const HEADER_LIST = [
     }
 ];
 
-const Header = ({getMovies}) => {
-   
+const Header = ({ getMovies, setMovieType, page, totalPages, setResponsePageNumber }) => {
     const [navClass, setNavClass] = React.useState(false);
     const [menuClass, setMenuClass] = React.useState(false);
+    const [type, setType] = React.useState('now_playing');
 
     const toggleMenu = () => {
         setMenuClass((prevMenu) => !prevMenu);
         setNavClass((prevClass) => !prevClass);
     };
 
-    React.useEffect(() => {
-        getMovies('now_playing', 1)
+    const setMovieTypeUrl = (type) => {
+        setType(type);
+        setMovieType(type);
+    };
 
+    React.useEffect(() => {
+        getMovies(type, page);
+        setResponsePageNumber(page, totalPages);
         // es-linst-disable-next-line
-    }, []);
+    }, [type]);
 
     React.useEffect(() => {
         if (navClass) {
@@ -76,7 +79,7 @@ const Header = ({getMovies}) => {
                     <ul className={`${navClass ? 'header-nav header-mobile-nav' : 'header-nav'}`}>
                         {HEADER_LIST.map((data) => {
                             return (
-                                <li key={data.id} className="header-nav-item">
+                                <li key={data.id} className={data.type === type ? 'header-nav-item active-item' : 'header-nav-item'} onClick={() => setMovieTypeUrl(data.type)}>
                                     <span className="header-list-name">
                                         <i className={data.iconClass}></i>
                                     </span>
@@ -95,14 +98,16 @@ const Header = ({getMovies}) => {
 };
 
 Header.propTypes = {
-    getMovies: PropTypes.func
-}
+    getMovies: PropTypes.func,
+    setMovieType: PropTypes.func,
+    setResponsePageNumber: PropTypes.func,
+    page: PropTypes.number,
+    totalPages: PropTypes.number
+};
 
 const mapStateToProps = (state) => ({
-    list: state.movies.list
-})
+    page: state.movies.page,
+    totalPages: state.movies.totalPages
+});
 
-export default connect(
-    mapStateToProps,
-    {getMovies}
-)(Header);
+export default connect(mapStateToProps, { getMovies, setMovieType, setResponsePageNumber })(Header);

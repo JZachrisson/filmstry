@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import './Paginate.scss';
 
 const Paginate = ({ currentPage, totalPages, paginate }) => {
-    const [page, setPage] = React.useState();
+    const [page, setPage] = React.useState(currentPage);
     const [totalPageNumber, setTotalPageNumber] = React.useState();
 
     React.useEffect(() => {

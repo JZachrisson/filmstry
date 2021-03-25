@@ -7,23 +7,28 @@ import { v4 as uuidv4 } from 'uuid';
 import LazyImage from '../../lazy-image/LazyImage';
 import Rating from '../rating/Rating';
 
-import './Grid.scss';
+import '../grid/Grid.scss';
+import './SearchResult.scss';
 
-const Grid = ({ list }) => {
+const SearchResult = ({ searchResult, searchQuery }) => {
     const [movieData, setMovieData] = React.useState([]);
 
     React.useEffect(() => {
         // const filteredList = [...list.reduce((map, obj) => map.set(obj.id, obj), new Map()).values()];
 
-        setMovieData(list);
-    }, [list]);
+        setMovieData(searchResult);
+    }, [searchResult]);
 
     function truncate(str, n) {
         return str?.length > n ? str.substr(0, n - 1) + '...' : str;
     }
 
     return (
-        <>
+        <div className="search-keyword">
+            <div className="grid-search-title">
+                <span className="grid-text1">Your search keyword:</span>{' '}
+                <span className="grid-text2">{searchQuery}</span>
+            </div>
             <div className="grid">
                 {movieData.map((movie) => {
                     return (
@@ -50,16 +55,18 @@ const Grid = ({ list }) => {
                     );
                 })}
             </div>
-        </>
+        </div>
     );
 };
 
-Grid.propTypes = {
-    list: PropTypes.array.isRequired
+SearchResult.propTypes = {
+    searchResult: PropTypes.func.isRequired,
+    searchQuery: PropTypes.func.isRequired
 };
 
 const mapStateToProps = (state) => ({
-    list: state.movies.list
+    searchResult: state.movies.searchResult,
+    searchQuery: state.movies.searchQuery
 });
 
-export default connect(mapStateToProps, {})(Grid);
+export default connect(mapStateToProps, {})(SearchResult);

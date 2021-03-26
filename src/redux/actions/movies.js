@@ -50,7 +50,7 @@ export const setResponsePageNumber = (page, totalPages) => async (dispatch) => {
 export const setMovieType = (type) => async (dispatch) => {
     dispatchMethod(MOVIE_TYPE, type, dispatch);
 };
-export const serchQuery = (query) => async (dispatch) => {
+export const searchQuery = (query) => async (dispatch) => {
     dispatchMethod(SEARCH_QUERY, query, dispatch);
 };
 

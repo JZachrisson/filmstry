@@ -5,9 +5,10 @@ import './Main.scss';
 
 import MainContent from '../content/main-content/MainContent';
 import Spinner from '../spinner/Spinner';
+import SearchResult from '../content/search-result/SearchResult';
 import { loadMoreMovies, setResponsePageNumber } from '../../redux/actions/movies';
 
-const Main = ({ loadMoreMovies, page, totalPages, setResponsePageNumber, movieType }) => {
+const Main = ({ loadMoreMovies, page, totalPages, setResponsePageNumber, movieType, searchResult }) => {
     const [loading, setLoading] = React.useState(false);
     const [currentPage, setCurrentPage] = React.useState(page);
     const mainRef = React.useRef();
@@ -47,7 +48,7 @@ const Main = ({ loadMoreMovies, page, totalPages, setResponsePageNumber, movieTy
     return (
         <>
             <div className="main" ref={mainRef} onScroll={() => handleScroll()}>
-                {loading ? <Spinner /> : <MainContent />}
+                {loading ? <Spinner /> : <>{searchResult && searchResult.length === 0 ? <MainContent /> : <SearchResult />}</>}
                 <div ref={bottomLineRef}></div>
             </div>
         </>
@@ -60,14 +61,16 @@ Main.propTypes = {
     page: PropTypes.number,
     totalPages: PropTypes.number,
     setResponsePageNumber: PropTypes.func,
-    movieType: PropTypes.string
+    movieType: PropTypes.string,
+    searchResult: PropTypes.array
 };
 
 const mapStateToProps = (state) => ({
     list: state.movies.list,
     page: state.movies.page,
     totalPages: state.movies.totalPages,
-    movieType: state.movies.movieType
+    movieType: state.movies.movieType,
+    searchResult: state.movies.searchResult
 });
 
 export default connect(mapStateToProps, { loadMoreMovies, setResponsePageNumber })(Main);

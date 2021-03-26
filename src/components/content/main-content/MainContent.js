@@ -10,7 +10,6 @@ import { IMAGE_URL } from '../../../services/movies.service';
 import { setResponsePageNumber, getMovies } from '../../../redux/actions/movies';
 
 const MainContent = ({ list, movieType, totalPages, page, setResponsePageNumber, getMovies }) => {
-
     const [currentPage, setCurrentPage] = React.useState(page);
     const [images, setImages] = React.useState([]);
 

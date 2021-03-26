@@ -13,9 +13,9 @@ const Grid = ({ list }) => {
     const [movieData, setMovieData] = React.useState([]);
 
     React.useEffect(() => {
-        const filteredList = [...list.reduce((map, obj) => map.set(obj.id, obj), new Map()).values()];
+        // const filteredList = [...list.reduce((map, obj) => map.set(obj.id, obj), new Map()).values()];
 
-        setMovieData(filteredList);
+        setMovieData(list);
     }, [list]);
 
     function truncate(str, n) {
